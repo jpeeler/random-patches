@@ -1,0 +1,190 @@
+From 10724a8959e309b78d4d345abce8da763fa5cd45 Mon Sep 17 00:00:00 2001
+From: Jeff Peeler <jpeeler@redhat.com>
+Date: Tue, 5 Apr 2016 17:37:13 -0400
+Subject: [PATCH 2/2] Add pod files
+
+Missing nova and neutron
+---
+ kubernetes/pods/glance-pod.yaml   | 27 +++++++++++++++++++++++++++
+ kubernetes/pods/heat-pod.yaml     | 27 +++++++++++++++++++++++++++
+ kubernetes/pods/horizon-pod.yaml  | 19 +++++++++++++++++++
+ kubernetes/pods/mariadb-pod.yaml  | 19 +++++++++++++++++++
+ kubernetes/pods/mongodb-pod.yaml  | 19 +++++++++++++++++++
+ kubernetes/pods/rabbitmq-pod.yaml | 19 +++++++++++++++++++
+ 6 files changed, 130 insertions(+)
+ create mode 100644 kubernetes/pods/glance-pod.yaml
+ create mode 100644 kubernetes/pods/heat-pod.yaml
+ create mode 100644 kubernetes/pods/horizon-pod.yaml
+ create mode 100644 kubernetes/pods/mariadb-pod.yaml
+ create mode 100644 kubernetes/pods/mongodb-pod.yaml
+ create mode 100644 kubernetes/pods/rabbitmq-pod.yaml
+
+diff --git a/kubernetes/pods/glance-pod.yaml b/kubernetes/pods/glance-pod.yaml
+new file mode 100644
+index 0000000..0a606ef
+--- /dev/null
++++ b/kubernetes/pods/glance-pod.yaml
+@@ -0,0 +1,27 @@
++apiVersion: v1
++kind: Pod
++metadata:
++   name: glance
++spec:
++  hostNetwork: True
++  containers:
++    - image: kollaglue/centos-binary-glance-api:2.0.0
++      name: glance-api
++      volumeMounts:
++        - mountPath: "/var/lib/kolla/config_files"
++          name: glance-config
++      env:
++        - name: KOLLA_CONFIG_STRATEGY
++          value: COPY_ALWAYS
++    - image: kollaglue/centos-binary-glance-registry:2.0.0
++      name: glance-registry
++      volumeMounts:
++        - mountPath: "/var/lib/kolla/config_files"
++          name: glance-config
++      env:
++        - name: KOLLA_CONFIG_STRATEGY
++          value: COPY_ALWAYS
++  volumes:
++    - name: glance-config
++      hostPath:
++        path: "/etc/kolla/keystone"
+diff --git a/kubernetes/pods/heat-pod.yaml b/kubernetes/pods/heat-pod.yaml
+new file mode 100644
+index 0000000..8c3a48c
+--- /dev/null
++++ b/kubernetes/pods/heat-pod.yaml
+@@ -0,0 +1,27 @@
++apiVersion: v1
++kind: Pod
++metadata:
++   name: heat
++spec:
++  hostNetwork: True
++  containers:
++    - image: kollaglue/centos-binary-heat-api:2.0.0
++      name: heat-api
++      volumeMounts:
++        - mountPath: "/var/lib/kolla/config_files"
++          name: heat-config
++      env:
++        - name: KOLLA_CONFIG_STRATEGY
++          value: COPY_ALWAYS
++    - image: kollaglue/centos-binary-heat-engine:2.0.0
++      name: heat-engine
++      volumeMounts:
++        - mountPath: "/var/lib/kolla/config_files"
++          name: heat-config
++      env:
++        - name: KOLLA_CONFIG_STRATEGY
++          value: COPY_ALWAYS
++  volumes:
++    - name: heat-config
++      hostPath:
++        path: "/etc/kolla/heat"
+diff --git a/kubernetes/pods/horizon-pod.yaml b/kubernetes/pods/horizon-pod.yaml
+new file mode 100644
+index 0000000..5218367
+--- /dev/null
++++ b/kubernetes/pods/horizon-pod.yaml
+@@ -0,0 +1,19 @@
++apiVersion: v1
++kind: Pod
++metadata:
++   name: horizon
++spec:
++  hostNetwork: True
++  containers:
++    - image: kollaglue/centos-binary-horizon:2.0.0
++      name: horizon
++      volumeMounts:
++        - mountPath: "/var/lib/kolla/config_files"
++          name: horizon-config
++      env:
++        - name: KOLLA_CONFIG_STRATEGY
++          value: COPY_ALWAYS
++  volumes:
++    - name: horizon-config
++      hostPath:
++        path: "/etc/kolla/horizon"
+diff --git a/kubernetes/pods/mariadb-pod.yaml b/kubernetes/pods/mariadb-pod.yaml
+new file mode 100644
+index 0000000..115f4c6
+--- /dev/null
++++ b/kubernetes/pods/mariadb-pod.yaml
+@@ -0,0 +1,19 @@
++apiVersion: v1
++kind: Pod
++metadata:
++   name: mariadb
++spec:
++  hostNetwork: True
++  containers:
++    - image: kollaglue/centos-binary-mariadb:2.0.0
++      name: mariadb
++      volumeMounts:
++        - mountPath: "/var/lib/kolla/config_files"
++          name: mariadb-config
++      env:
++        - name: KOLLA_CONFIG_STRATEGY
++          value: COPY_ALWAYS
++  volumes:
++    - name: mariadb-config
++      hostPath:
++        path: "/etc/kolla/mariadb"
+diff --git a/kubernetes/pods/mongodb-pod.yaml b/kubernetes/pods/mongodb-pod.yaml
+new file mode 100644
+index 0000000..f0a11c4
+--- /dev/null
++++ b/kubernetes/pods/mongodb-pod.yaml
+@@ -0,0 +1,19 @@
++apiVersion: v1
++kind: Pod
++metadata:
++   name: mongodb
++spec:
++  hostNetwork: True
++  containers:
++    - image: kollaglue/centos-binary-mongodb:2.0.0
++      name: mongodb
++      volumeMounts:
++        - mountPath: "/var/lib/kolla/config_files"
++          name: mongodb-config
++      env:
++        - name: KOLLA_CONFIG_STRATEGY
++          value: COPY_ALWAYS
++  volumes:
++    - name: mongodb-config
++      hostPath:
++        path: "/etc/kolla/mongodb"
+diff --git a/kubernetes/pods/rabbitmq-pod.yaml b/kubernetes/pods/rabbitmq-pod.yaml
+new file mode 100644
+index 0000000..7954151
+--- /dev/null
++++ b/kubernetes/pods/rabbitmq-pod.yaml
+@@ -0,0 +1,19 @@
++apiVersion: v1
++kind: Pod
++metadata:
++   name: rabbitmq
++spec:
++  hostNetwork: True
++  containers:
++    - image: kollaglue/centos-binary-rabbitmq:2.0.0
++      name: rabbitmq
++      volumeMounts:
++        - mountPath: "/var/lib/kolla/config_files"
++          name: rabbitmq-config
++      env:
++        - name: KOLLA_CONFIG_STRATEGY
++          value: COPY_ALWAYS
++  volumes:
++    - name: rabbitmq-config
++      hostPath:
++        path: "/etc/kolla/rabbitmq"
+-- 
+2.5.5
+

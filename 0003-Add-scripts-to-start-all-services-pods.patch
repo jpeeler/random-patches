@@ -1,0 +1,38 @@
+From 77ab1f33b7d84bea0c3acd909510d871774f07c7 Mon Sep 17 00:00:00 2001
+From: Jeff Peeler <jpeeler@redhat.com>
+Date: Wed, 6 Apr 2016 14:57:15 -0400
+Subject: [PATCH] Add scripts to start all services/pods
+
+---
+ tools/start-all-pods.sh     | 5 +++++
+ tools/start-all-services.sh | 6 ++++++
+ 2 files changed, 11 insertions(+)
+ create mode 100755 tools/start-all-pods.sh
+ create mode 100755 tools/start-all-services.sh
+
+diff --git a/tools/start-all-pods.sh b/tools/start-all-pods.sh
+new file mode 100755
+index 0000000..64ffc9c
+--- /dev/null
++++ b/tools/start-all-pods.sh
+@@ -0,0 +1,5 @@
++#!/bin/sh
++
++for pod in `ls ../kubernetes/pods/*.yaml`; do
++    kubectl create -f $pod
++fi
+diff --git a/tools/start-all-services.sh b/tools/start-all-services.sh
+new file mode 100755
+index 0000000..14d6861
+--- /dev/null
++++ b/tools/start-all-services.sh
+@@ -0,0 +1,6 @@
++#!/bin/sh
++
++for service in `ls ../kubernetes/services/*.yaml`; do
++    #echo "Creating service for $service"
++    kubectl create -f $service
++done
+-- 
+2.5.5
+

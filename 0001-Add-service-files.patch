@@ -1,0 +1,217 @@
+From 0ac8d7ee465d6f17c3788bf02954cfd63c1336e1 Mon Sep 17 00:00:00 2001
+From: Jeff Peeler <jpeeler@redhat.com>
+Date: Mon, 4 Apr 2016 17:13:28 -0400
+Subject: [PATCH 1/2] Add service files
+
+---
+ kubernetes/services/glance-services.yaml.j2  | 20 +++++++++++
+ kubernetes/services/heat-services.yaml.j2    | 20 +++++++++++
+ kubernetes/services/horizon-service.yaml.j2  | 10 ++++++
+ kubernetes/services/mariadb-service.yaml.j2  |  9 +++++
+ kubernetes/services/mongodb-service.yaml.j2  | 10 ++++++
+ kubernetes/services/neutron-service.yaml.j2  |  9 +++++
+ kubernetes/services/nova-services.yaml.j2    | 53 ++++++++++++++++++++++++++++
+ kubernetes/services/rabbitmq-service.yaml.j2 |  9 +++++
+ 8 files changed, 140 insertions(+)
+ create mode 100644 kubernetes/services/glance-services.yaml.j2
+ create mode 100644 kubernetes/services/heat-services.yaml.j2
+ create mode 100644 kubernetes/services/horizon-service.yaml.j2
+ create mode 100644 kubernetes/services/mariadb-service.yaml.j2
+ create mode 100644 kubernetes/services/mongodb-service.yaml.j2
+ create mode 100644 kubernetes/services/neutron-service.yaml.j2
+ create mode 100644 kubernetes/services/nova-services.yaml.j2
+ create mode 100644 kubernetes/services/rabbitmq-service.yaml.j2
+
+diff --git a/kubernetes/services/glance-services.yaml.j2 b/kubernetes/services/glance-services.yaml.j2
+new file mode 100644
+index 0000000..465cadd
+--- /dev/null
++++ b/kubernetes/services/glance-services.yaml.j2
+@@ -0,0 +1,20 @@
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ glance_registry_port }}
++  selector:
++    name: glance
++metadata:
++   name: glance-registry
++
++---
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ glance_api_port }}
++  selector:
++    name: glance
++metadata:
++   name: glance-api
+\ No newline at end of file
+diff --git a/kubernetes/services/heat-services.yaml.j2 b/kubernetes/services/heat-services.yaml.j2
+new file mode 100644
+index 0000000..e6e3edb
+--- /dev/null
++++ b/kubernetes/services/heat-services.yaml.j2
+@@ -0,0 +1,20 @@
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ heat_api_port }}
++  selector:
++    name: heat-api
++metadata:
++   name: heat-api
++
++---
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ heat_api_cfn_port }}
++  selector:
++    name: heat-api
++metadata:
++   name: heat-api-cfn
+diff --git a/kubernetes/services/horizon-service.yaml.j2 b/kubernetes/services/horizon-service.yaml.j2
+new file mode 100644
+index 0000000..12330c9
+--- /dev/null
++++ b/kubernetes/services/horizon-service.yaml.j2
+@@ -0,0 +1,10 @@
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: 80
++  selector:
++    name: horizon
++metadata:
++   name: horizon
++
+diff --git a/kubernetes/services/mariadb-service.yaml.j2 b/kubernetes/services/mariadb-service.yaml.j2
+new file mode 100644
+index 0000000..0f966ae
+--- /dev/null
++++ b/kubernetes/services/mariadb-service.yaml.j2
+@@ -0,0 +1,9 @@
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ mariadb_port }}
++  selector:
++    name: mariadb
++metadata:
++   name: mariadb
+diff --git a/kubernetes/services/mongodb-service.yaml.j2 b/kubernetes/services/mongodb-service.yaml.j2
+new file mode 100644
+index 0000000..8c908ef
+--- /dev/null
++++ b/kubernetes/services/mongodb-service.yaml.j2
+@@ -0,0 +1,10 @@
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ mongo_db_web_port }}
++  selector:
++    name: mongodb
++metadata:
++   name: mongodb
++
+diff --git a/kubernetes/services/neutron-service.yaml.j2 b/kubernetes/services/neutron-service.yaml.j2
+new file mode 100644
+index 0000000..9f7a41e
+--- /dev/null
++++ b/kubernetes/services/neutron-service.yaml.j2
+@@ -0,0 +1,9 @@
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ neutron_server_port }}
++  selector:
++    name: neutron
++metadata:
++   name: neutron
+diff --git a/kubernetes/services/nova-services.yaml.j2 b/kubernetes/services/nova-services.yaml.j2
+new file mode 100644
+index 0000000..bfb4d84
+--- /dev/null
++++ b/kubernetes/services/nova-services.yaml.j2
+@@ -0,0 +1,53 @@
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ nova_api_port }}
++  selector:
++    name: nova-controller
++metadata:
++   name: nova-api
++
++---
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: 16509
++  selector:
++    name: nova-compute
++metadata:
++   name: nova-libvirt
++
++---
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ nova_api_ec2_port }}
++  selector:
++    name: nova-controller
++metadata:
++   name: nova-ec2-api
++
++---
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ nova_novncproxy_port }}
++  selector:
++    name: nova-controller
++metadata:
++   name: nova-novncproxy
++
++---
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ nova_metadata_port }}
++  selector:
++    name: nova-controller
++metadata:
++   name: nova-novncproxy
+\ No newline at end of file
+diff --git a/kubernetes/services/rabbitmq-service.yaml.j2 b/kubernetes/services/rabbitmq-service.yaml.j2
+new file mode 100644
+index 0000000..3f0dda7
+--- /dev/null
++++ b/kubernetes/services/rabbitmq-service.yaml.j2
+@@ -0,0 +1,9 @@
++apiVersion: v1
++kind: Service
++spec:
++  ports:
++    - port: {{ rabbitmq_port }}
++  selector:
++    name: rabbitmq
++metadata:
++   name: rabbitmq
+-- 
+2.5.5
+
